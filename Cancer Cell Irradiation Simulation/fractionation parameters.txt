@@ -1,0 +1,12 @@
+--- FRACTIONATED DOSING INFO (ADAPTIVE ESCALATION + REDUCTION) ---
+Base dose rate: 6.8114e+01 Gy/hr
+Base dose per fraction: 6.811429 Gy
+Exposure time per fraction: 0.1 hr
+Fractions per week: 5, total fractions: 35
+Max escalation: 150.0%, Max reduction: 25.0%
+--------------------------------------------------------------------
+
+
+Total administered dose: 236.590 Gy
+Average per-fraction dose: 6.572 Gy
+Range of doses: 5.109 – 6.811 Gy
