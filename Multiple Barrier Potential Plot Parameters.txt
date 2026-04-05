@@ -1,0 +1,7 @@
+Parameters Used:
+
+V0: 0.378 eV
+Barrier width a: 2.0 nm
+Well width b: 5.0 nm
+Number of barriers N: 150
+Effective mass (m*/m_e): 0.063
