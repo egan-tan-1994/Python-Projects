@@ -1,2 +1,2 @@
 # Python-Projects
-This contains all Python scripts used for different purposes
+This is where all Data Science-related Python projects are uploaded.
