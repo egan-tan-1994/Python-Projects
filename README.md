@@ -1,1 +1,1 @@
-This is where all Physics-related Python projects are uploaded.
+This is where all Finance-related Python projects are uploaded.
