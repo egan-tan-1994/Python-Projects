@@ -1,0 +1,7 @@
+This project investigates a systematic mean-reversion trading strategy using historical financial market data and Python-based quantitative analysis. 
+The primary objective was to explore whether deviations from rolling statistical baselines could be used to generate trading signals and whether those signals exhibited 
+predictive characteristics under varying market conditions. The strategy employs rolling z-score analysis to identify statistically significant price deviations from a 
+moving average. Trading signals are generated when prices move beyond predefined z-score thresholds, under the assumption that extreme deviations may subsequently revert 
+toward their historical mean. The research framework includes exploratory backtesting, parameter sensitivity analysis, volatility-regime analysis, Monte Carlo simulation, 
+and robustness testing across multiple assets and market environments. Although the project was developed as a research-oriented simulation rather than a production trading
+system, it provides a practical framework for evaluating systematic trading concepts and demonstrates core quantitative finance methodologies.
