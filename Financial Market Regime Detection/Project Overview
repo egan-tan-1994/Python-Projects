@@ -1,0 +1,9 @@
+This project develops a machine learning framework for automatically identifying financial market regimes from historical price and volume data. 
+The objective is to classify daily market conditions into four economically meaningful states:
+•	Bull Market
+•	Bear Market
+•	Sideways Market
+•	High-Volatility Market
+Rather than relying solely on price trends, the framework combines probabilistic unsupervised learning with supervised machine learning to characterize 
+evolving market dynamics. The resulting regime classifications are incorporated into a confidence-weighted trading strategy whose performance is evaluated against 
+a passive buy-and-hold benchmark.
