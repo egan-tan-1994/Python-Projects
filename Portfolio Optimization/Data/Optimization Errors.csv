@@ -1,0 +1,20 @@
+,Date,Model,Error
+0,2002-01-02,Black-Litterman,No historical market-cap data is available up to 2002-01-02 00:00:00.
+1,2003-01-02,Black-Litterman,No historical market-cap data is available up to 2003-01-02 00:00:00.
+2,2004-01-02,Black-Litterman,No historical market-cap data is available up to 2004-01-02 00:00:00.
+3,2005-01-03,Black-Litterman,No historical market-cap data is available up to 2005-01-03 00:00:00.
+4,2006-01-03,Black-Litterman,No historical market-cap data is available up to 2006-01-03 00:00:00.
+5,2007-01-03,Black-Litterman,No historical market-cap data is available up to 2007-01-03 00:00:00.
+6,2008-01-02,Black-Litterman,No historical market-cap data is available up to 2008-01-02 00:00:00.
+7,2009-01-02,Black-Litterman,No historical market-cap data is available up to 2009-01-02 00:00:00.
+8,2010-01-04,Black-Litterman,No historical market-cap data is available up to 2010-01-04 00:00:00.
+9,2011-01-03,Black-Litterman,No historical market-cap data is available up to 2011-01-03 00:00:00.
+10,2012-01-03,Black-Litterman,No historical market-cap data is available up to 2012-01-03 00:00:00.
+11,2013-01-02,Black-Litterman,No historical market-cap data is available up to 2013-01-02 00:00:00.
+12,2014-01-02,Black-Litterman,"Missing market capitalization data for ['PPG', 'DELL', 'QCOM', 'AMAT', 'MRK', 'AME', 'PG', 'CL', 'V', 'MA', 'MU', 'T', 'JPM', 'JNJ', 'INTC', 'GE', 'MS', 'RTX', 'TXN', 'IBM', 'SPGI', 'LMT', 'ADP', 'COF', 'WDC', 'ABT', 'GILD', 'UNP', 'ADI', 'TMUS', 'MMM', 'ADBE', 'AXP', 'BA', 'CVX', 'CSCO', 'DD', 'XOM', 'FDX', 'GM', 'HAS', 'JBL', 'KMB', 'KLAC', 'LOW', 'MKC', 'NEM', 'OLN', 'PH'] at 2014-01-02 00:00:00."
+13,2015-01-02,Black-Litterman,"Missing market capitalization data for ['PPG', 'DELL', 'QCOM', 'AMAT', 'MRK', 'AME', 'PG', 'CL', 'V', 'MA', 'MU', 'T', 'JPM', 'JNJ', 'INTC', 'GE', 'MS', 'RTX', 'TXN', 'IBM', 'SPGI', 'LMT', 'ADP', 'COF', 'WDC', 'ABT', 'GILD', 'UNP', 'ADI', 'TMUS', 'MMM', 'ADBE', 'AXP', 'BA', 'CVX', 'CSCO', 'DD', 'XOM', 'FDX', 'GM', 'HAS', 'JBL', 'KMB', 'KLAC', 'LOW', 'MKC', 'NEM', 'OLN', 'PH'] at 2015-01-02 00:00:00."
+14,2016-01-04,Black-Litterman,"Missing market capitalization data for ['DELL', 'RTX', 'SPGI'] at 2016-01-04 00:00:00."
+15,2017-01-03,Black-Litterman,"Missing market capitalization data for ['DELL', 'RTX'] at 2017-01-03 00:00:00."
+16,2018-01-02,Black-Litterman,"Missing market capitalization data for ['DELL', 'RTX'] at 2018-01-02 00:00:00."
+17,2019-01-02,Black-Litterman,Missing market capitalization data for ['RTX'] at 2019-01-02 00:00:00.
+18,2020-01-02,Black-Litterman,Missing market capitalization data for ['RTX'] at 2020-01-02 00:00:00.
