@@ -1,0 +1,36 @@
+,Scenario,Portfolio,Recovery Days
+0,SARS Outbreak,Equal Weight,6.0
+1,SARS Outbreak,Markowitz,6.0
+2,SARS Outbreak,Monte Carlo,6.0
+3,SARS Outbreak,Black-Litterman,6.0
+4,SARS Outbreak,Risk Parity,6.0
+5,Global Financial Crisis,Equal Weight,
+6,Global Financial Crisis,Markowitz,
+7,Global Financial Crisis,Monte Carlo,
+8,Global Financial Crisis,Black-Litterman,
+9,Global Financial Crisis,Risk Parity,
+10,Russia-Ukraine War,Equal Weight,163.0
+11,Russia-Ukraine War,Markowitz,119.0
+12,Russia-Ukraine War,Monte Carlo,142.0
+13,Russia-Ukraine War,Black-Litterman,156.0
+14,Russia-Ukraine War,Risk Parity,154.0
+15,COVID Crash,Equal Weight,
+16,COVID Crash,Markowitz,
+17,COVID Crash,Monte Carlo,
+18,COVID Crash,Black-Litterman,
+19,COVID Crash,Risk Parity,
+20,Inflation Bear Market,Equal Weight,
+21,Inflation Bear Market,Markowitz,41.0
+22,Inflation Bear Market,Monte Carlo,
+23,Inflation Bear Market,Black-Litterman,
+24,Inflation Bear Market,Risk Parity,
+25,Israel-Palestine Gaza War,Equal Weight,63.0
+26,Israel-Palestine Gaza War,Markowitz,86.0
+27,Israel-Palestine Gaza War,Monte Carlo,63.0
+28,Israel-Palestine Gaza War,Black-Litterman,37.0
+29,Israel-Palestine Gaza War,Risk Parity,62.0
+30,2026 Iran War,Equal Weight,18.0
+31,2026 Iran War,Markowitz,21.0
+32,2026 Iran War,Monte Carlo,18.0
+33,2026 Iran War,Black-Litterman,14.0
+34,2026 Iran War,Risk Parity,37.0

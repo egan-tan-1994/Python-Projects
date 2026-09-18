@@ -1,0 +1,6 @@
+,Model,Status,Days,Asset Contribution Records
+0,Simulated (Max Sharpe Ratio),OK,1420,71000
+1,Equal-Weight,OK,1420,71000
+2,Markowitz,OK,1420,71000
+3,Black-Litterman,OK,1420,71000
+4,Risk-Parity,OK,1420,71000
