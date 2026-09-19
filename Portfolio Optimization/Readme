@@ -1,2 +1,6 @@
-A Markowitz portfolio optimization framework across 20 assets and 26 years of data, achieving a 21.6% annualized return and 0.60 Sharpe ratio versus 14.1% and 0.43
-for equal-weighted allocation.
+Built an end-to-end portfolio research platform across 50 assets and 26.7 years of data, backtesting
+Markowitz, Black-Litterman, risk-parity, and Monte Carlo-simulated (max Sharpe) allocation strategies with
+walk-forward out-of-sample validation and transaction-cost-aware rebalancing;
+found the Monte Carlosimulated strategy delivered the strongest out-of-sample performance (0.95 Sharpe ratio, 24.1% annualized
+return) versus equal-weighted (0.92, 20.8%), while the in-sample-favored Markowitz model overfit, with
+Sharpe dropping from 0.73 in-sample to 0.56 out-of-sample.
