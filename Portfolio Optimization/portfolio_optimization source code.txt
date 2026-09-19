@@ -9802,6 +9802,10 @@ print("METRICS SUMMARY")
 print("=" * 100)
 
 
+# Model names differ slightly in label across sections of this script
+# (e.g. metrics_comparison uses "Optimized (Markowitz)", while
+# Phase 17/18/19/20 use "Markowitz"). Map between the two conventions so
+# every metric below can be indexed consistently across all five models.
 resume_model_name_map = {
     "Simulated (Monte Carlo)": "Simulated (Max Sharpe Ratio)",
     "Equal Weight": "Equal-Weight",
@@ -9809,109 +9813,140 @@ resume_model_name_map = {
     "Optimized (Black-Litterman)": "Black-Litterman",
     "Optimized (Risk-parity)": "Risk-Parity",
 }
+resume_label_for_model = {
+    canonical: label for label, canonical in resume_model_name_map.items()
+}
+resume_all_models = list(resume_model_name_map.values())
 
 
-resume_winner_label = metrics_comparison.loc["Sharpe Ratio"].idxmax()
-resume_winner_model = resume_model_name_map[resume_winner_label]
+# --------------------------------------------------------------------------
+# Tier 1 + Tier 2a: in-sample vs. out-of-sample Sharpe & Return,
+# all five models
+# --------------------------------------------------------------------------
+resume_summary_rows = []
 
-resume_winner_sharpe_is = metrics_comparison.loc[
-    "Sharpe Ratio", resume_winner_label
-]
-resume_winner_return_is = metrics_comparison.loc[
-    "Expected Returns", resume_winner_label
-]
-resume_ew_sharpe_is = metrics_comparison.loc["Sharpe Ratio", "Equal Weight"]
-resume_ew_return_is = metrics_comparison.loc["Expected Returns", 
-                                             "Equal Weight"]
+for resume_model in resume_all_models:
+    resume_label = resume_label_for_model[resume_model]
 
-print("\nTier 1 -- Winning Strategy (In-Sample, Frictionless)")
-print(f"  Winning model: {resume_winner_model}")
-print(
-    f"  Sharpe Ratio: {resume_winner_sharpe_is:.2f} "
-    f"(Equal-Weight: {resume_ew_sharpe_is:.2f})"
+    resume_sharpe_is = metrics_comparison.loc["Sharpe Ratio", resume_label]
+    resume_return_is = metrics_comparison.loc[
+        "Expected Returns", resume_label
+    ]
+
+    if resume_model in phase18_summary.index:
+        resume_sharpe_oos = phase18_summary.loc[
+            resume_model, "Sharpe Ratio"
+        ]
+        resume_return_oos = phase18_summary.loc[
+            resume_model, "Annualized Return"
+        ]
+    else:
+        resume_sharpe_oos = np.nan
+        resume_return_oos = np.nan
+
+    resume_summary_rows.append({
+        "Model": resume_model,
+        "In-Sample Sharpe": resume_sharpe_is,
+        "OOS Sharpe": resume_sharpe_oos,
+        "In-Sample Return": resume_return_is,
+        "OOS Return": resume_return_oos,
+    })
+
+resume_summary_table = (
+    pd.DataFrame(resume_summary_rows)
+    .set_index("Model")
+    .reindex(resume_all_models)
 )
-print(
-    f"  Annualized Return: {resume_winner_return_is:.1%} "
-    f"(Equal-Weight: {resume_ew_return_is:.1%})"
-)
 
-
-print("\nTier 2 -- In-Sample vs. Out-of-Sample (Walk-Forward, Phase 18)")
-
-if resume_winner_model in phase18_summary.index:
-    resume_winner_sharpe_oos = phase18_summary.loc[
-        resume_winner_model, "Sharpe Ratio"
-    ]
-    resume_winner_return_oos = phase18_summary.loc[
-        resume_winner_model, "Annualized Return"
-    ]
-    print(
-        f"  {resume_winner_model}: in-sample Sharpe "
-        f"{resume_winner_sharpe_is:.2f} -> out-of-sample Sharpe "
-        f"{resume_winner_sharpe_oos:.2f}"
-    )
-    print(
-        f"  {resume_winner_model}: in-sample return "
-        f"{resume_winner_return_is:.1%} -> out-of-sample return "
-        f"{resume_winner_return_oos:.1%}"
-    )
-else:
-    resume_winner_sharpe_oos = np.nan
-    resume_winner_return_oos = np.nan
-    print(
-        f"  No out-of-sample Phase 18 result was available for "
-        f"{resume_winner_model}."
-    )
-
-if "Equal-Weight" in phase18_summary.index:
-    resume_ew_sharpe_oos = phase18_summary.loc[
-        "Equal-Weight", "Sharpe Ratio"
-    ]
-    resume_ew_return_oos = phase18_summary.loc[
-        "Equal-Weight", "Annualized Return"
-    ]
-    print(
-        f"  Equal-Weight: in-sample Sharpe {resume_ew_sharpe_is:.2f} "
-        f"-> out-of-sample Sharpe {resume_ew_sharpe_oos:.2f}"
-    )
-
+resume_winner_model = resume_summary_table["In-Sample Sharpe"].idxmax()
 
 print(
-    f"\nTier 2 -- Transaction-Cost Impact "
-    f"(Out-of-Sample, {resume_winner_model})"
+    "\nTier 1 & Tier 2 -- In-Sample vs. Out-of-Sample Sharpe & Return "
+    "(All 5 Models)"
 )
+print(
+    resume_summary_table.to_string(
+        formatters={
+            "In-Sample Sharpe": "{:.2f}".format,
+            "OOS Sharpe": "{:.2f}".format,
+            "In-Sample Return": "{:.1%}".format,
+            "OOS Return": "{:.1%}".format,
+        }
+    )
+)
+
+print(f"\nWinning model (highest in-sample Sharpe): {resume_winner_model}")
+print(
+    f"  In-Sample Sharpe: "
+    f"{resume_summary_table.loc[resume_winner_model, 'In-Sample Sharpe']:.2f} "
+    f"(Equal-Weight: "
+    f"{resume_summary_table.loc['Equal-Weight', 'In-Sample Sharpe']:.2f})"
+)
+print(
+    f"  In-Sample Annualized Return: "
+    f"{resume_summary_table.loc[resume_winner_model, 'In-Sample Return']:.1%} "
+    f"(Equal-Weight: "
+    f"{resume_summary_table.loc['Equal-Weight', 'In-Sample Return']:.1%})"
+)
+print(
+    f"  Out-of-Sample Sharpe: "
+    f"{resume_summary_table.loc[resume_winner_model, 'OOS Sharpe']:.2f} "
+    f"(Equal-Weight: "
+    f"{resume_summary_table.loc['Equal-Weight', 'OOS Sharpe']:.2f})"
+)
+print(
+    f"  Out-of-Sample Annualized Return: "
+    f"{resume_summary_table.loc[resume_winner_model, 'OOS Return']:.1%} "
+    f"(Equal-Weight: "
+    f"{resume_summary_table.loc['Equal-Weight', 'OOS Return']:.1%})"
+)
+
+
+# --------------------------------------------------------------------------
+# Tier 2b: transaction-cost impact on returns (out-of-sample),
+# all five models
+# --------------------------------------------------------------------------
+print("\nTier 2 -- Transaction-Cost Impact (Out-of-Sample, All 5 Models)")
 print(
     f"  Assumed transaction cost rate: "
     f"{phase18_transaction_cost_rate:.4%} per rebalance turnover"
 )
 
 if not phase20_performance_attribution_summary.empty:
-    resume_tc_row = phase20_performance_attribution_summary[
-        phase20_performance_attribution_summary["Model"]
-        == resume_winner_model
-    ]
-    if not resume_tc_row.empty:
-        resume_gross_return_oos = resume_tc_row[
-            "OOS Annualized Gross Return"
-        ].iloc[0]
-        resume_net_return_oos = resume_tc_row[
-            "OOS Annualized Net Return"
-        ].iloc[0]
-        print(f"  Gross annualized return: {resume_gross_return_oos:.1%}")
-        print(f"  Net annualized return: {resume_net_return_oos:.1%}")
-        print(
-            f"  Impact of transaction costs: "
-            f"{(resume_net_return_oos - resume_gross_return_oos):+.1%}"
+    resume_tc_table = (
+        phase20_performance_attribution_summary[
+            phase20_performance_attribution_summary["Model"].isin(
+                resume_all_models
+            )
+        ]
+        .set_index("Model")
+        .reindex(resume_all_models)[
+            [
+                "OOS Annualized Gross Return",
+                "OOS Annualized Net Return",
+            ]
+        ]
+    )
+    resume_tc_table["Transaction-Cost Impact"] = (
+        resume_tc_table["OOS Annualized Net Return"]
+        - resume_tc_table["OOS Annualized Gross Return"]
+    )
+    print(
+        resume_tc_table.to_string(
+            formatters={
+                "OOS Annualized Gross Return": "{:.1%}".format,
+                "OOS Annualized Net Return": "{:.1%}".format,
+                "Transaction-Cost Impact": "{:+.1%}".format,
+            }
         )
-    else:
-        print(
-            f"  No Phase 20 attribution row was available for "
-            f"{resume_winner_model}."
-        )
+    )
 else:
     print("  No Phase 20 performance attribution summary was produced.")
 
 
+# --------------------------------------------------------------------------
+# Tier 2c: confirmed backtest date range
+# --------------------------------------------------------------------------
 resume_backtest_years = (
     (pd.to_datetime(end_date) - pd.to_datetime(start_date)).days
     / 365.25
@@ -9923,47 +9958,41 @@ print(
 )
 
 
-print(f"\nTier 3 -- Factor Exposure ({resume_winner_model})")
+# --------------------------------------------------------------------------
+# Tier 3a: factor exposure, all five models
+# --------------------------------------------------------------------------
+print("\nTier 3 -- Factor Exposure (All 5 Models)")
 
 if not phase20_factor_exposures.empty:
     resume_factor_rows = phase20_factor_exposures[
-        phase20_factor_exposures["Model"] == resume_winner_model
+        phase20_factor_exposures["Model"].isin(resume_all_models)
     ]
     if not resume_factor_rows.empty:
         print(resume_factor_rows.to_string(index=False))
     else:
-        print(
-            f"  No factor exposure regression was available for "
-            f"{resume_winner_model}."
-        )
+        print("  No factor exposure regression rows were available.")
 else:
     print("  No Phase 20 factor exposure results were produced.")
 
 
-print(f"\nTier 3 -- Stress-Test Robustness ({resume_winner_model})")
+# --------------------------------------------------------------------------
+# Tier 3b: parameter / stress-test robustness, all five models
+# --------------------------------------------------------------------------
+print("\nTier 3 -- Stress-Test Robustness (All 5 Models)")
 
-if (
-    not phase19_stress_summary.empty
-    and resume_winner_model in phase19_stress_summary.index
-):
-    resume_mean_sharpe_stress = phase19_stress_summary.loc[
-        resume_winner_model, "Mean_Sharpe"
-    ]
-    resume_worst_sharpe_stress = phase19_stress_summary.loc[
-        resume_winner_model, "Worst_Sharpe"
-    ]
+if not phase19_stress_summary.empty:
+    resume_stress_table = phase19_stress_summary.reindex(
+        [m for m in resume_all_models if m in phase19_stress_summary.index]
+    )[["Mean_Sharpe", "Worst_Sharpe"]]
     print(
-        f"  Mean Sharpe across historical stress periods: "
-        f"{resume_mean_sharpe_stress:.2f}"
-    )
-    print(
-        f"  Worst Sharpe across historical stress periods: "
-        f"{resume_worst_sharpe_stress:.2f}"
+        resume_stress_table.to_string(
+            formatters={
+                "Mean_Sharpe": "{:.2f}".format,
+                "Worst_Sharpe": "{:.2f}".format,
+            }
+        )
     )
 else:
-    print(
-        f"  No Phase 19 stress-test summary was available for "
-        f"{resume_winner_model}."
-    )
+    print("  No Phase 19 stress-test summary was produced.")
 
 print("=" * 100)
