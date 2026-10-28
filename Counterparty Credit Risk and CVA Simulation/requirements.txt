@@ -1,4 +1,4 @@
-# Trigger clean rebuild - timestamp: 2026-10-29
+# Trigger clean rebuild
 streamlit==1.38.0
 numpy==1.26.4
 pandas==2.2.2
