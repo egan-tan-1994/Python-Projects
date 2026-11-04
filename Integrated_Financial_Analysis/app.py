@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from streamlit_financial_engine import (
+from integrated_financial_analysis import (
     FinancialDrivers,
     BalanceSheetPeriod,
     IntegratedFinancialEngine,
