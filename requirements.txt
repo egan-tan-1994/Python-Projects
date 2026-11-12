@@ -11,3 +11,4 @@ arch
 plotly
 dash
 scikit-learn
+yfinance
