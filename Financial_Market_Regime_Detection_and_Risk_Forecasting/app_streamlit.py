@@ -87,7 +87,8 @@ with tab1:
     with col2:
         st.subheader("Standard Risk Metrics")
         ann_returns, ann_vol, ann_sharpe, var_95, cvar_95 = calculate_risk_metrics(returns_a)
-        sortino, calmar, max_dd, drawdowns = calculate_maximum_drawdown(returns_a)
+        max_dd, drawdowns, sortino, calmar = calculate_maximum_drawdown(returns_a)
+        
         st.write(f"**Annualized Returns:** {to_scalar(ann_returns):.4%}")
         st.write(f"**Annualized Volatility:** {to_scalar(ann_vol):.4%}")
         st.write(f"**Annualized Sharpe Ratio:** {to_scalar(ann_sharpe):.4f}")

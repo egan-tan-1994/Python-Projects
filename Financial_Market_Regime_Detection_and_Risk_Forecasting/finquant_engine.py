@@ -110,7 +110,9 @@ def permutation_test_difference(returns_asset_a, returns_asset_b, n_permutations
 def estimate_garch_volatility(returns, plot=True, output_dir="plots"):
     scaled_returns = returns * 100
     model = arch_model(scaled_returns, vol='Garch', p=1, q=1, dist='t')
-    return model.fit(disp='off')
+    res = model.fit(disp='off')
+    # Return the actual volatility array, scaled back to decimal format
+    return res.conditional_volatility / 100
 
 # ==========================================
 # Step 8: Monte Carlo Portfolio Simulation
