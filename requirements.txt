@@ -1,7 +1,13 @@
-# Trigger clean rebuild - timestamp: 2026-10-29
-streamlit==1.38.0
-numpy==1.26.4
-pandas==2.2.2
-matplotlib==3.8.4
+streamlit
+numpy
+pandas
 scipy
-numpy-financial
+statsmodels
+pymc
+hmmlearn
+pykalman
+matplotlib
+arch
+plotly
+dash
+scikit-learn
