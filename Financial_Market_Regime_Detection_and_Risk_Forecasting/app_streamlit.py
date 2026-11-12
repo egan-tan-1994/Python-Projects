@@ -86,11 +86,16 @@ with tab1:
 
     with col2:
         st.subheader("Standard Risk Metrics")
-        var_95, cvar_95 = calculate_risk_metrics(returns_a)
-        max_dd, drawdowns = calculate_maximum_drawdown(returns_a)
+        ann_returns, ann_vol, ann_sharpe, var_95, cvar_95 = calculate_risk_metrics(returns_a)
+        sortino, calmar, max_dd, drawdowns = calculate_maximum_drawdown(returns_a)
+        st.write(f"**Annualized Returns:** {ann_returns:.4%}")
+        st.write(f"**Annualized Volatility:** {ann_vol:.4%}")
+        st.write(f"**Annualized Sharpe Ratio:** {ann_sharpe:.4f}")
+        st.write(f"**Max Drawdown:** {max_dd:.4%}")
+        st.write(f"**Annualized Sortino Ratio:** {sortino:.4f}")
+        st.write(f"**Annualized Calmar Ratio:** {calmar:.4f}")
         st.write(f"**95% VaR:** {var_95:.4%}")
         st.write(f"**95% CVaR:** {cvar_95:.4%}")
-        st.write(f"**Max Drawdown:** {max_dd:.4%}")
 
     with col3:
         st.subheader("Statistical Tests")

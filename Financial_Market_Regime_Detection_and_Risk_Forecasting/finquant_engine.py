@@ -45,9 +45,12 @@ def estimate_return_distribution(returns):
 # Step 3: Risk Metrics (VaR & CVaR)
 # ==========================================
 def calculate_risk_metrics(returns, confidence_level=0.05):
+    ann_return = returns.mean() * 252
+    ann_vol = returns.std() * np.sqrt(252)
+    ann_sharpe = ann_return / ann_vol
     var = np.percentile(returns, confidence_level * 100)
     cvar = returns[returns <= var].mean()
-    return var, cvar
+    return ann_return, ann_vol, ann_sharpe, var, cvar
 
 # ==========================================
 # Step 4: Maximum Drawdown Analysis
@@ -57,7 +60,12 @@ def calculate_maximum_drawdown(returns, plot=True, output_dir="plots"):
     running_max = np.maximum.accumulate(cumulative_returns)
     drawdowns = (cumulative_returns - running_max) / running_max
     max_drawdown = np.min(drawdowns)
-    return max_drawdown, drawdowns
+    
+    downside_returns = returns[returns < 0]
+    downside_volatility = downside_returns.std() * np.sqrt(252)
+    sortino = ann_return / downside_volatility
+    calmar = ann_return / abs(max_drawdown)
+    return max_drawdown, drawdowns, sortino, calmar
 
 # ==========================================
 # Step 5: Bootstrap Resampling (Standard & BCa)
