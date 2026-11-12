@@ -311,7 +311,7 @@ def hierarchical_risk_parity(cov_matrix):
     corr = cov / np.outer(vols, vols)
     dist = np.sqrt(np.clip((1.0 - corr) / 2.0, 0.0, 1.0))
     dist_array = dist.to_numpy()
-    np.fill_diagonal(dist, 0.0)
+    np.fill_diagonal(dist_array, 0.0)
     link = sch.linkage(ssd.squareform(dist_array), 'single')
     
     link_arr = link.astype(int)
