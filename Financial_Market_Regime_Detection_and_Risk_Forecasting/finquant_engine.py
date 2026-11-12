@@ -56,6 +56,9 @@ def calculate_risk_metrics(returns, confidence_level=0.05):
 # Step 4: Maximum Drawdown Analysis
 # ==========================================
 def calculate_maximum_drawdown(returns, plot=True, output_dir="plots"):
+    ann_return = returns.mean() * 252
+    ann_vol = returns.std() * np.sqrt(252)
+    
     cumulative_returns = np.exp(np.cumsum(returns))
     running_max = np.maximum.accumulate(cumulative_returns)
     drawdowns = (cumulative_returns - running_max) / running_max
