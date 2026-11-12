@@ -327,7 +327,7 @@ def hierarchical_risk_parity(cov_matrix):
         sort_ix = pd.concat([sort_ix, df2]).sort_index()
     sort_ix = sort_ix.tolist()
     
-    w = pd.Series(1, index=sort_ix)
+    w = pd.Series(1.0, index=sort_ix)
     c_items = [sort_ix]
     while len(c_items) > 0:
         c_items = [i[j:k] for i in c_items for j, k in ((0, len(i)//2), (len(i)//2, len(i))) if len(i) > 1]
