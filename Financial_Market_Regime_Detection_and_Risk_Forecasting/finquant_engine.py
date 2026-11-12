@@ -15,7 +15,7 @@ from hmmlearn import hmm
 from pykalman import KalmanFilter
 import matplotlib
 matplotlib.use('Agg')
-import matplotlib.subplots as plt
+import matplotlib.pyplot as plt
 from arch import arch_model
 import plotly.graph_objects as go
 from dash import Dash, dcc, html
