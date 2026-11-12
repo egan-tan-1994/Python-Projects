@@ -18,6 +18,10 @@ from finquant_engine import (
     build_volatility_surface, local_volatility_dupire, delta_hedged_backtester, generate_ml_alpha
 )
 
+# Helper function to safely extract a scalar float from any NumPy array format
+def to_scalar(val):
+    return float(np.asarray(val).ravel()[0])
+
 st.set_page_config(page_title="FinQuant Inference Engine", layout="wide")
 st.title("📈 Statistical Inference & Financial Risk Framework")
 
@@ -36,16 +40,11 @@ end_date = st.sidebar.date_input("End Date", pd.to_datetime("today"))
 
 @st.cache_data(show_spinner=False)
 def fetch_market_data(t_a, t_b, t_m, start, end):
-    # Using yf.Ticker().history() avoids recent yfinance MultiIndex column changes
-    # and relies on the universally available 'Close' column.
     df_a = yf.Ticker(t_a).history(start=start, end=end)[['Close']].rename(columns={'Close': t_a})
     df_b = yf.Ticker(t_b).history(start=start, end=end)[['Close']].rename(columns={'Close': t_b})
     df_m = yf.Ticker(t_m).history(start=start, end=end)[['Close']].rename(columns={'Close': t_m})
     
-    # Merge and calculate returns
     data = df_a.join(df_b, how='inner').join(df_m, how='inner').dropna()
-    
-    # Convert index to timezone-naive to prevent any plotting/merging warnings
     data.index = data.index.tz_localize(None) 
     
     returns = data.pct_change().dropna()
@@ -82,28 +81,28 @@ with tab1:
         st.subheader("Distribution & EVT Tail Risk")
         mu_t, std_t, df_t = estimate_return_distribution(returns_a)
         shape, loc, scale, var_99 = estimate_evt_tail_risk(returns_a)
-        st.write(f"**Student-t Fit:** Mean {float(mu_t):.4f}, Vol {float(std_t):.4f}, DoF {float(df_t):.2f}")
-        st.write(f"**EVT 99% VaR:** {float(var_99):.4%}")
+        st.write(f"**Student-t Fit:** Mean {to_scalar(mu_t):.4f}, Vol {to_scalar(std_t):.4f}, DoF {to_scalar(df_t):.2f}")
+        st.write(f"**EVT 99% VaR:** {to_scalar(var_99):.4%}")
 
     with col2:
         st.subheader("Standard Risk Metrics")
         ann_returns, ann_vol, ann_sharpe, var_95, cvar_95 = calculate_risk_metrics(returns_a)
         sortino, calmar, max_dd, drawdowns = calculate_maximum_drawdown(returns_a)
-        st.write(f"**Annualized Returns:** {float(ann_returns):.4%}")
-        st.write(f"**Annualized Volatility:** {float(ann_vol):.4%}")
-        st.write(f"**Annualized Sharpe Ratio:** {float(ann_sharpe):.4f}")
-        st.write(f"**Max Drawdown:** {float(max_dd):.4%}")
-        st.write(f"**Annualized Sortino Ratio:** {float(sortino):.4f}")
-        st.write(f"**Annualized Calmar Ratio:** {float(calmar):.4f}")
-        st.write(f"**95% VaR:** {float(var_95):.4%}")
-        st.write(f"**95% CVaR:** {float(cvar_95):.4%}")
+        st.write(f"**Annualized Returns:** {to_scalar(ann_returns):.4%}")
+        st.write(f"**Annualized Volatility:** {to_scalar(ann_vol):.4%}")
+        st.write(f"**Annualized Sharpe Ratio:** {to_scalar(ann_sharpe):.4f}")
+        st.write(f"**Max Drawdown:** {to_scalar(max_dd):.4%}")
+        st.write(f"**Annualized Sortino Ratio:** {to_scalar(sortino):.4f}")
+        st.write(f"**Annualized Calmar Ratio:** {to_scalar(calmar):.4f}")
+        st.write(f"**95% VaR:** {to_scalar(var_95):.4%}")
+        st.write(f"**95% CVaR:** {to_scalar(cvar_95):.4%}")
 
     with col3:
         st.subheader("Statistical Tests")
         sr_point, sr_low, sr_high = bootstrap_sharpe_ratio_bca(returns_a)
         p_val_diff = permutation_test_difference(returns_a, returns_b)
-        st.write(f"**Sharpe Ratio (BCa 95% CI):** {float(sr_point):.2f} ({float(sr_low):.2f} to {float(sr_high):.2f})")
-        st.write(f"**Permutation P-Value ({ticker_a} vs {ticker_b}):** {float(p_val_diff):.4f}")
+        st.write(f"**Sharpe Ratio (BCa 95% CI):** {to_scalar(sr_point):.2f} ({to_scalar(sr_low):.2f} to {to_scalar(sr_high):.2f})")
+        st.write(f"**Permutation P-Value ({ticker_a} vs {ticker_b}):** {to_scalar(p_val_diff):.4f}")
 
     st.divider()
     st.subheader("Copulas & Regression")
@@ -111,7 +110,7 @@ with tab1:
     with col4:
         st.write(f"**Dependence Structure ({ticker_a} & {ticker_b})**")
         rho, clayton, gumbel, u, v = estimate_copulas(returns_a, returns_b)
-        st.write(f"**Pearson Rho:** {float(rho):.4f}, **Clayton Theta:** {float(clayton):.4f}, **Gumbel Theta:** {float(gumbel):.4f}")
+        st.write(f"**Pearson Rho:** {to_scalar(rho):.4f}, **Clayton Theta:** {to_scalar(clayton):.4f}, **Gumbel Theta:** {to_scalar(gumbel):.4f}")
         
         # Copula Scatter Plots
         fig_copula = make_subplots(rows=1, cols=2, subplot_titles=("Original Returns Scatter", "Copula Uniform Marginals (Dependence Structure)"))
@@ -127,7 +126,7 @@ with tab1:
     with col5:
         st.write(f"**Robust Regression ({ticker_a} vs {ticker_mkt})**")
         robust_res = robust_linear_regression(returns_a, returns_market)
-        st.write("**Robust OLS Beta:**", float(robust_res.params[1]))
+        st.write("**Robust OLS Beta:**", to_scalar(robust_res.params[1]))
 
 # ==========================================
 # TAB 2: Time Series, Regimes & Pairs Trading
@@ -200,8 +199,8 @@ with tab3:
         vol = np.std(returns_a)*np.sqrt(252)
         bs_call = calculate_black_scholes(spot, spot, 1.0, 0.05, vol)
         heston_call = heston_pricing_mc(spot, spot, 1.0, 0.05, vol**2, 2.0, vol**2, 0.1, -0.7)
-        st.metric("Black-Scholes Call", f"${float(bs_call):.2f}")
-        st.metric("Heston MC Call", f"${float(heston_call):.2f}")
+        st.metric("Black-Scholes Call", f"${to_scalar(bs_call):.2f}")
+        st.metric("Heston MC Call", f"${to_scalar(heston_call):.2f}")
 
 # ==========================================
 # TAB 4: Portfolio Optimization
@@ -209,7 +208,6 @@ with tab3:
 with tab4:
     st.header("4. Modern Portfolio Allocation")
     
-    # Calculate real covariance matrix and expected returns (historical mean)
     returns_matrix = np.column_stack((returns_a, returns_b, returns_market))
     expected_rets = np.mean(returns_matrix, axis=0) * 252
     cov_mat = np.cov(returns_matrix, rowvar=False) * 252
@@ -238,24 +236,22 @@ with tab4:
 with tab5:
     st.header("5. Volatility Surfaces & ML Alpha")
     
-    # ML Alpha to Black-Litterman
     st.subheader("Machine Learning Alpha (Random Forest) -> Black-Litterman")
     X_train = np.random.randn(len(returns_a)-1, 3) 
-    y_train = returns_matrix[1:] # Predicting next day return based on random noise (dummy feature setup)
+    y_train = returns_matrix[1:] 
     X_latest = np.random.randn(1, 3)
     
-    predicted_returns = generate_ml_alpha(X_train, y_train, X_latest)[0] * 252 # Annualize
+    predicted_returns = generate_ml_alpha(X_train, y_train, X_latest)[0] * 252 
     P = np.eye(3)
     omega = np.diag([0.01, 0.01, 0.01])
     post_ret, post_cov = black_litterman_posterior(expected_rets, cov_mat, P, predicted_returns, omega)
     w_bl = optimize_markowitz(post_ret, post_cov)
     
-    st.write(f"**ML Predicted Returns (Annualized):** {ticker_a}: {float(predicted_returns[0]):.2%}, {ticker_b}: {float(predicted_returns[1]):.2%}, {ticker_mkt}: {float(predicted_returns[2]):.2%}")
-    st.write(f"**BL Optimized Weights:** {ticker_a}: {float(w_bl[0]):.2%}, {ticker_b}: {float(w_bl[1]):.2%}, {ticker_mkt}: {float(w_bl[2]):.2%}")
+    st.write(f"**ML Predicted Returns (Annualized):** {ticker_a}: {to_scalar(predicted_returns[0]):.2%}, {ticker_b}: {to_scalar(predicted_returns[1]):.2%}, {ticker_mkt}: {to_scalar(predicted_returns[2]):.2%}")
+    st.write(f"**BL Optimized Weights:** {ticker_a}: {to_scalar(w_bl[0]):.2%}, {ticker_b}: {to_scalar(w_bl[1]):.2%}, {ticker_mkt}: {to_scalar(w_bl[2]):.2%}")
 
     st.divider()
 
-    # Volatility Surfaces
     st.subheader("Volatility Surfaces: Implied vs Local (Dupire)")
     col_iv, col_lv = st.columns(2)
 
@@ -279,7 +275,6 @@ with tab5:
 
     st.divider()
 
-    # Delta Hedger
     st.subheader(f"Option Delta-Hedging Backtester ({ticker_a})")
     vol = np.std(returns_a)*np.sqrt(252)
     hedged_pnl = delta_hedged_backtester(prices_a[-252:], K=prices_a[-252], r=0.05, vol=vol, T=1.0)
