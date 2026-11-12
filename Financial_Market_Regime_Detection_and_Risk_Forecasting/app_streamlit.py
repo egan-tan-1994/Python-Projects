@@ -82,28 +82,28 @@ with tab1:
         st.subheader("Distribution & EVT Tail Risk")
         mu_t, std_t, df_t = estimate_return_distribution(returns_a)
         shape, loc, scale, var_99 = estimate_evt_tail_risk(returns_a)
-        st.write(f"**Student-t Fit:** Mean {mu_t:.4f}, Vol {std_t:.4f}, DoF {df_t:.2f}")
-        st.write(f"**EVT 99% VaR:** {var_99:.4%}")
+        st.write(f"**Student-t Fit:** Mean {float(mu_t):.4f}, Vol {float(std_t):.4f}, DoF {float(df_t):.2f}")
+        st.write(f"**EVT 99% VaR:** {float(var_99):.4%}")
 
     with col2:
         st.subheader("Standard Risk Metrics")
         ann_returns, ann_vol, ann_sharpe, var_95, cvar_95 = calculate_risk_metrics(returns_a)
         sortino, calmar, max_dd, drawdowns = calculate_maximum_drawdown(returns_a)
-        st.write(f"**Annualized Returns:** {ann_returns:.4%}")
-        st.write(f"**Annualized Volatility:** {ann_vol:.4%}")
-        st.write(f"**Annualized Sharpe Ratio:** {ann_sharpe:.4f}")
-        st.write(f"**Max Drawdown:** {max_dd:.4%}")
-        st.write(f"**Annualized Sortino Ratio:** {sortino:.4f}")
-        st.write(f"**Annualized Calmar Ratio:** {calmar:.4f}")
-        st.write(f"**95% VaR:** {var_95:.4%}")
-        st.write(f"**95% CVaR:** {cvar_95:.4%}")
+        st.write(f"**Annualized Returns:** {float(ann_returns):.4%}")
+        st.write(f"**Annualized Volatility:** {float(ann_vol):.4%}")
+        st.write(f"**Annualized Sharpe Ratio:** {float(ann_sharpe):.4f}")
+        st.write(f"**Max Drawdown:** {float(max_dd):.4%}")
+        st.write(f"**Annualized Sortino Ratio:** {float(sortino):.4f}")
+        st.write(f"**Annualized Calmar Ratio:** {float(calmar):.4f}")
+        st.write(f"**95% VaR:** {float(var_95):.4%}")
+        st.write(f"**95% CVaR:** {float(cvar_95):.4%}")
 
     with col3:
         st.subheader("Statistical Tests")
         sr_point, sr_low, sr_high = bootstrap_sharpe_ratio_bca(returns_a)
         p_val_diff = permutation_test_difference(returns_a, returns_b)
-        st.write(f"**Sharpe Ratio (BCa 95% CI):** {sr_point:.2f} ({sr_low:.2f} to {sr_high:.2f})")
-        st.write(f"**Permutation P-Value ({ticker_a} vs {ticker_b}):** {p_val_diff:.4f}")
+        st.write(f"**Sharpe Ratio (BCa 95% CI):** {float(sr_point):.2f} ({float(sr_low):.2f} to {float(sr_high):.2f})")
+        st.write(f"**Permutation P-Value ({ticker_a} vs {ticker_b}):** {float(p_val_diff):.4f}")
 
     st.divider()
     st.subheader("Copulas & Regression")
@@ -111,7 +111,7 @@ with tab1:
     with col4:
         st.write(f"**Dependence Structure ({ticker_a} & {ticker_b})**")
         rho, clayton, gumbel, u, v = estimate_copulas(returns_a, returns_b)
-        st.write(f"**Pearson Rho:** {rho:.4f}, **Clayton Theta:** {clayton:.4f}, **Gumbel Theta:** {gumbel:.4f}")
+        st.write(f"**Pearson Rho:** {float(rho):.4f}, **Clayton Theta:** {float(clayton):.4f}, **Gumbel Theta:** {float(gumbel):.4f}")
         
         # Copula Scatter Plots
         fig_copula = make_subplots(rows=1, cols=2, subplot_titles=("Original Returns Scatter", "Copula Uniform Marginals (Dependence Structure)"))
@@ -127,7 +127,7 @@ with tab1:
     with col5:
         st.write(f"**Robust Regression ({ticker_a} vs {ticker_mkt})**")
         robust_res = robust_linear_regression(returns_a, returns_market)
-        st.write("**Robust OLS Beta:**", robust_res.params[1].round(4))
+        st.write("**Robust OLS Beta:**", float(robust_res.params[1]))
 
 # ==========================================
 # TAB 2: Time Series, Regimes & Pairs Trading
@@ -200,8 +200,8 @@ with tab3:
         vol = np.std(returns_a)*np.sqrt(252)
         bs_call = calculate_black_scholes(spot, spot, 1.0, 0.05, vol)
         heston_call = heston_pricing_mc(spot, spot, 1.0, 0.05, vol**2, 2.0, vol**2, 0.1, -0.7)
-        st.metric("Black-Scholes Call", f"${bs_call:.2f}")
-        st.metric("Heston MC Call", f"${heston_call:.2f}")
+        st.metric("Black-Scholes Call", f"${float(bs_call):.2f}")
+        st.metric("Heston MC Call", f"${float(heston_call):.2f}")
 
 # ==========================================
 # TAB 4: Portfolio Optimization
