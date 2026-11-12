@@ -4,6 +4,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
 import yfinance as yf
+from plotly.subplots import make_subplots
 
 from finquant_engine import (
     estimate_return_distribution, calculate_risk_metrics, calculate_maximum_drawdown,
@@ -105,12 +106,24 @@ with tab1:
         st.write(f"**Permutation P-Value ({ticker_a} vs {ticker_b}):** {p_val_diff:.4f}")
 
     st.divider()
-    st.subheader(f"Copulas & Regression")
+    st.subheader("Copulas & Regression")
     col4, col5 = st.columns(2)
     with col4:
         st.write(f"**Dependence Structure ({ticker_a} & {ticker_b})**")
         rho, clayton, gumbel, u, v = estimate_copulas(returns_a, returns_b)
         st.write(f"**Pearson Rho:** {rho:.4f}, **Clayton Theta:** {clayton:.4f}, **Gumbel Theta:** {gumbel:.4f}")
+        
+        # Copula Scatter Plots
+        fig_copula = make_subplots(rows=1, cols=2, subplot_titles=("Original Returns Scatter", "Copula Uniform Marginals (Dependence Structure)"))
+        fig_copula.add_trace(go.Scatter(x=returns_a, y=returns_b, mode='markers', marker=dict(size=4, opacity=0.5)), row=1, col=1)
+        fig_copula.add_trace(go.Scatter(x=u, y=v, mode='markers', marker=dict(size=4, color='purple', opacity=0.5)), row=1, col=2)
+        fig_copula.update_layout(showlegend=False, height=350, margin=dict(l=0, r=0, t=30, b=0))
+        fig_copula.update_xaxes(title_text=f"Asset A ({ticker_a})", row=1, col=1)
+        fig_copula.update_yaxes(title_text=f"Asset B ({ticker_b})", row=1, col=1)
+        fig_copula.update_xaxes(title_text=f"U (Asset A Rank)", row=1, col=2)
+        fig_copula.update_yaxes(title_text=f"V (Asset B Rank)", row=1, col=2)
+        st.plotly_chart(fig_copula, use_container_width=True)
+
     with col5:
         st.write(f"**Robust Regression ({ticker_a} vs {ticker_mkt})**")
         robust_res = robust_linear_regression(returns_a, returns_market)
@@ -135,6 +148,17 @@ with tab2:
         spread, hedge_ratio = kalman_filter_pairs_trading(prices_a, prices_b)
         fig_kf = px.line(y=hedge_ratio, title="Dynamic Hedge Ratio (Kalman)")
         st.plotly_chart(fig_kf, use_container_width=True)
+        
+    st.divider()
+    
+    st.subheader(f"GARCH(1,1) Conditional Volatility ({ticker_a})")
+    garch_vol = estimate_garch_volatility(returns_a)
+    
+    fig_garch = go.Figure()
+    fig_garch.add_trace(go.Scatter(y=np.abs(returns_a), mode='lines', name='Absolute Returns', line=dict(color='lightgray', width=1)))
+    fig_garch.add_trace(go.Scatter(y=garch_vol, mode='lines', name='Conditional Volatility', line=dict(color='orange', width=2)))
+    fig_garch.update_layout(height=400, title="GARCH(1,1) Conditional Volatility", margin=dict(l=0, r=0, t=40, b=0))
+    st.plotly_chart(fig_garch, use_container_width=True)
 
 # ==========================================
 # TAB 3: Pricing & Simulation
@@ -226,8 +250,8 @@ with tab5:
     post_ret, post_cov = black_litterman_posterior(expected_rets, cov_mat, P, predicted_returns, omega)
     w_bl = optimize_markowitz(post_ret, post_cov)
     
-    st.write(f"**ML Predicted Returns (Annualized):** {ticker_a}: {predicted_returns[0]:.2%}, {ticker_b}: {predicted_returns[1]:.2%}, {ticker_mkt}: {predicted_returns[2]:.2%}")
-    st.write(f"**BL Optimized Weights:** {ticker_a}: {w_bl[0]:.2%}, {ticker_b}: {w_bl[1]:.2%}, {ticker_mkt}: {w_bl[2]:.2%}")
+    st.write(f"**ML Predicted Returns (Annualized):** {ticker_a}: {float(predicted_returns[0]):.2%}, {ticker_b}: {float(predicted_returns[1]):.2%}, {ticker_mkt}: {float(predicted_returns[2]):.2%}")
+    st.write(f"**BL Optimized Weights:** {ticker_a}: {float(w_bl[0]):.2%}, {ticker_b}: {float(w_bl[1]):.2%}, {ticker_mkt}: {float(w_bl[2]):.2%}")
 
     st.divider()
 
