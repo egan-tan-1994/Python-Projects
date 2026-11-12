@@ -35,13 +35,18 @@ end_date = st.sidebar.date_input("End Date", pd.to_datetime("today"))
 
 @st.cache_data(show_spinner=False)
 def fetch_market_data(t_a, t_b, t_m, start, end):
-    # Fetch data individually to avoid MultiIndex column complexities in newer yfinance versions
-    df_a = yf.download(t_a, start=start, end=end)[['Adj Close']].rename(columns={'Adj Close': t_a})
-    df_b = yf.download(t_b, start=start, end=end)[['Adj Close']].rename(columns={'Adj Close': t_b})
-    df_m = yf.download(t_m, start=start, end=end)[['Adj Close']].rename(columns={'Adj Close': t_m})
+    # Using yf.Ticker().history() avoids recent yfinance MultiIndex column changes
+    # and relies on the universally available 'Close' column.
+    df_a = yf.Ticker(t_a).history(start=start, end=end)[['Close']].rename(columns={'Close': t_a})
+    df_b = yf.Ticker(t_b).history(start=start, end=end)[['Close']].rename(columns={'Close': t_b})
+    df_m = yf.Ticker(t_m).history(start=start, end=end)[['Close']].rename(columns={'Close': t_m})
     
     # Merge and calculate returns
     data = df_a.join(df_b, how='inner').join(df_m, how='inner').dropna()
+    
+    # Convert index to timezone-naive to prevent any plotting/merging warnings
+    data.index = data.index.tz_localize(None) 
+    
     returns = data.pct_change().dropna()
     return data, returns
 
