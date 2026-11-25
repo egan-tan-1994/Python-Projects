@@ -6,7 +6,7 @@ st.set_page_config(page_title="XRD Bragg Angle Calculator", layout="wide")
 st.title("XRD Bragg Angle Calculator")
 st.markdown("""
 This app calculates the Bragg angle of Silicon (Si), Gallium arsenide (GaAs), Indium
-Phosphide (InP), Alunimum Gallium arsenide (Al(x)Ga(1-x)As), and Gallium indium arsenide 
+Phosphide (InP), Alunimum gallium arsenide (Al(x)Ga(1-x)As), and Gallium indium arsenide 
 (Ga(x)In(1-x)As) given the user-inputted Miller indices (h,k,l) and mole fractions.
 """)
 
